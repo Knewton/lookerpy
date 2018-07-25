@@ -56,7 +56,7 @@ class Configuration(object):
         Constructor
         """
         # Default Base url
-        self.host = "https://looker.buffer.com:19999/api/3.0"
+        self.host = "https://localhost:9999/api/3.0"
         # Default api client
         self.api_client = None
         # Temp file folder for downloading files
