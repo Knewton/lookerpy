@@ -21,6 +21,8 @@ Copyright 2016 SmartBear Software
 from __future__ import absolute_import
 import base64
 import urllib3
+import yaml
+import os
 
 try:
     import httplib
@@ -43,6 +45,16 @@ def singleton(cls, *args, **kw):
     return _singleton
 
 
+def _fetch_credentials(configuration_yaml, environment):
+    f = open(configuration_yaml)
+    params = yaml.load(f)
+    f.close()
+
+    client_id = params[environment]['client_id']
+    client_secret = params[environment]['client_secret']
+
+    return client_id, client_secret
+
 @singleton
 class Configuration(object):
     """
@@ -55,8 +67,15 @@ class Configuration(object):
         """
         Constructor
         """
+        self.configuration_yaml = 'config.yml'
+        self.environment = 'production'
+
+        configuration_yaml = self.configuration_yaml
+        environment = self.environment
+
+        self.client_id, self.client_secret = _fetch_credentials(configuration_yaml, environment)
         # Default Base url
-        self.host = "https://looker-stage-vpc.knewton.net:29999/api/3.0"
+        self.host = "https://looker.knewton.net:29999/api/3.0"
         # Default api client
         self.api_client = None
         # Temp file folder for downloading files
@@ -64,7 +83,12 @@ class Configuration(object):
 
         # Authentication Settings
         # dict to store API key(s)
-        self.api_key = {}
+
+        self.api_key = {
+            'client_id': self.client_id,
+            'client_secret': self.client_secret
+        }
+
         # dict to store API prefix (e.g. Bearer)
         self.api_key_prefix = {}
         # Username for HTTP basic authentication

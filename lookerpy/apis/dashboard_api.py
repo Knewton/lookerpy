@@ -28,6 +28,7 @@ from six import iteritems
 
 from ..configuration import Configuration
 from ..api_client import ApiClient
+from .connect_to_api import connect_to_api as api_connection
 
 
 class DashboardApi(object):
@@ -45,6 +46,10 @@ class DashboardApi(object):
             if not config.api_client:
                 config.api_client = ApiClient()
             self.api_client = config.api_client
+
+        # When instantiating this class, get an access token and store it as an instance variable
+        __access_token = api_connection()
+        self.__access_token = __access_token
 
     def all_dashboards(self, **kwargs):
         """
@@ -424,8 +429,8 @@ class DashboardApi(object):
         header_params['Content-Type'] = self.api_client.\
             select_header_content_type(['application/json'])
 
-        # Authentication setting
-        auth_settings = []
+        # We put the access token on the instance in the header of our request.
+        header_params['Authorization'] = 'token ' + self.__access_token
 
         response = self.api_client.call_api(resource_path, 'GET',
                                             path_params,
@@ -435,7 +440,6 @@ class DashboardApi(object):
                                             post_params=form_params,
                                             files=local_var_files,
                                             response_type='Dashboard',
-                                            auth_settings=auth_settings,
                                             callback=params.get('callback'))
         return response
 

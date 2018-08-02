@@ -63,3 +63,5 @@ target/
 
 #Mac OSX
 .DS_Store
+config.yml
+lookerpy/apis/config.yml
