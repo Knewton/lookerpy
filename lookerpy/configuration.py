@@ -124,7 +124,6 @@ class Configuration(object):
         # client key file
         self.key_file = None
 
-
     @property
     def logger_file(self):
         """

@@ -308,8 +308,8 @@ class DashboardApi(object):
 
         # verify the required parameter 'dashboard_id' is set
         if ('dashboard_id' not in params) or (params['dashboard_id'] is None):
-            raise ValueError(
-                "Missing the required parameter `dashboard_id` when calling `create_dashboard_prefetch`")
+            raise ValueError("Missing the required parameter `dashboard_id` when calling "
+                              "`create_dashboard_prefetch`")
 
         resource_path = '/dashboards/{dashboard_id}/prefetch'.replace('{format}', 'json')
         path_params = {}
@@ -389,8 +389,8 @@ class DashboardApi(object):
 
         # verify the required parameter 'dashboard_id' is set
         if ('dashboard_id' not in params) or (params['dashboard_id'] is None):
-            raise ValueError(
-                "Missing the required parameter `dashboard_id` when calling `dashboard`")
+            raise ValueError("Missing the required parameter `dashboard_id` when calling "
+                              "`dashboard`")
 
         resource_path = '/dashboards/{dashboard_id}'.replace('{format}', 'json')
         path_params = {}
@@ -469,8 +469,8 @@ class DashboardApi(object):
 
         # verify the required parameter 'dashboard_id' is set
         if ('dashboard_id' not in params) or (params['dashboard_id'] is None):
-            raise ValueError(
-                "Missing the required parameter `dashboard_id` when calling `dashboard_prefetch`")
+            raise ValueError("Missing the required parameter `dashboard_id` when calling "
+                              "`dashboard_prefetch`")
 
         resource_path = '/dashboards/{dashboard_id}/prefetch'.replace('{format}', 'json')
         path_params = {}
@@ -625,8 +625,8 @@ class DashboardApi(object):
 
         # verify the required parameter 'dashboard_id' is set
         if ('dashboard_id' not in params) or (params['dashboard_id'] is None):
-            raise ValueError(
-                "Missing the required parameter `dashboard_id` when calling `delete_dashboard`")
+            raise ValueError("Missing the required parameter `dashboard_id` when calling "
+                              "`delete_dashboard`")
 
         resource_path = '/dashboards/{dashboard_id}'.replace('{format}', 'json')
         path_params = {}
@@ -787,12 +787,12 @@ class DashboardApi(object):
 
         # verify the required parameter 'dashboard_id' is set
         if ('dashboard_id' not in params) or (params['dashboard_id'] is None):
-            raise ValueError(
-                "Missing the required parameter `dashboard_id` when calling `update_dashboard`")
+            raise ValueError("Missing the required parameter `dashboard_id` when calling "
+                              "`update_dashboard`")
         # verify the required parameter 'body' is set
         if ('body' not in params) or (params['body'] is None):
-            raise ValueError(
-                "Missing the required parameter `body` when calling `update_dashboard`")
+            raise ValueError("Missing the required parameter `body` when calling "
+                              "`update_dashboard`")
 
         resource_path = '/dashboards/{dashboard_id}'.replace('{format}', 'json')
         path_params = {}

@@ -3,7 +3,6 @@ from ..rest import ApiException
 from pprint import pprint
 from ..configuration import _fetch_credentials
 
-
 # Create an instance of the API class
 api_instance = ApiAuthApi()
 
