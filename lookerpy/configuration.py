@@ -70,6 +70,7 @@ class Configuration(object):
         """
         Constructor
         """
+
         self.configuration_yaml = 'lookerpy/config.yml'
         self.environment = 'production'
 
@@ -123,17 +124,6 @@ class Configuration(object):
         # client key file
         self.key_file = None
 
-    def __fetch_credentials(configuration_yaml, environment):
-        with open(configuration_yaml) as f:
-            try:
-                params = yaml.load(f)
-                client_id = params[environment]['client_id']
-                client_secret = params[environment]['client_secret']
-                f.close()
-            except IOError:
-                raise
-
-        return client_id, client_secret
 
     @property
     def logger_file(self):
