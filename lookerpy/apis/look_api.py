@@ -19,15 +19,12 @@ Copyright 2016 SmartBear Software
 
 from __future__ import absolute_import
 
-import sys
-import os
-import re
-
 # python 2 and python 3 compatibility library
 from six import iteritems
 
 from ..configuration import Configuration
 from ..api_client import ApiClient
+from .connect_to_api import connect_to_api
 
 
 class LookApi(object):
@@ -45,6 +42,10 @@ class LookApi(object):
             if not config.api_client:
                 config.api_client = ApiClient()
             self.api_client = config.api_client
+
+        # When instantiating this class, get an access token and store it as an instance variable
+        __access_token = connect_to_api()
+        self.__access_token = __access_token
 
     def all_looks(self, **kwargs):
         """
@@ -75,19 +76,20 @@ class LookApi(object):
             if key not in all_params:
                 raise TypeError(
                     "Got an unexpected keyword argument '%s'"
-                    " to method all_looks" % key
+                    " to method create_look_prefetch" % key
                 )
             params[key] = val
         del params['kwargs']
 
-
+        query_params = {}
+        if 'client_id' in params:
+            query_params['client_id'] = self.client_id
+        if 'client_secret' in params:
+            query_params['client_secret'] = self.client_secret
 
         resource_path = '/looks'.replace('{format}', 'json')
-        path_params = {}
 
-        query_params = {}
-        if 'fields' in params:
-            query_params['fields'] = params['fields']
+        path_params = {}
 
         header_params = {}
 
@@ -97,17 +99,17 @@ class LookApi(object):
         body_params = None
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.api_client. \
             select_header_accept(['application/json'])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.api_client. \
             select_header_content_type(['application/json'])
 
-        # Authentication setting
-        auth_settings = []
+        # We put the access token on the instance in the header of our request.
+        header_params['Authorization'] = 'token ' + self.__access_token
 
         response = self.api_client.call_api(resource_path, 'GET',
                                             path_params,
@@ -116,9 +118,7 @@ class LookApi(object):
                                             body=body_params,
                                             post_params=form_params,
                                             files=local_var_files,
-                                            response_type='list[Look]',
-                                            auth_settings=auth_settings,
-                                            callback=params.get('callback'))
+                                            response_type='list[Look]')
         return response
 
     def create_look_prefetch(self, look_id, **kwargs):
@@ -158,8 +158,8 @@ class LookApi(object):
 
         # verify the required parameter 'look_id' is set
         if ('look_id' not in params) or (params['look_id'] is None):
-            raise ValueError("Missing the required parameter `look_id` when calling `create_look_prefetch`")
-
+            raise ValueError("Missing the required parameter `look_id` when calling "
+                              "`create_look_prefetch`")
 
         resource_path = '/looks/{look_id}/prefetch'.replace('{format}', 'json')
         path_params = {}
@@ -178,13 +178,13 @@ class LookApi(object):
             body_params = params['body']
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.api_client. \
             select_header_accept(['application/json'])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.api_client. \
             select_header_content_type(['application/json'])
 
         # Authentication setting
@@ -241,15 +241,16 @@ class LookApi(object):
         if ('look_id' not in params) or (params['look_id'] is None):
             raise ValueError("Missing the required parameter `look_id` when calling `look`")
 
-
         resource_path = '/looks/{look_id}'.replace('{format}', 'json')
         path_params = {}
         if 'look_id' in params:
             path_params['look_id'] = params['look_id']
 
         query_params = {}
-        if 'fields' in params:
-            query_params['fields'] = params['fields']
+        if 'client_id' in params:
+            query_params['client_id'] = params['client_id']
+        if 'client_secret' in params:
+            query_params['client_secret'] = params['client_secret']
 
         header_params = {}
 
@@ -259,13 +260,13 @@ class LookApi(object):
         body_params = None
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.api_client. \
             select_header_accept(['application/json'])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.api_client. \
             select_header_content_type(['application/json'])
 
         # Authentication setting
@@ -319,8 +320,8 @@ class LookApi(object):
 
         # verify the required parameter 'look_id' is set
         if ('look_id' not in params) or (params['look_id'] is None):
-            raise ValueError("Missing the required parameter `look_id` when calling `look_prefetch`")
-
+            raise ValueError("Missing the required parameter `look_id` when calling "
+                              "`look_prefetch`")
 
         resource_path = '/looks/{look_id}/prefetch'.replace('{format}', 'json')
         path_params = {}
@@ -337,13 +338,13 @@ class LookApi(object):
         body_params = None
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.api_client. \
             select_header_accept(['application/json'])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.api_client. \
             select_header_content_type(['application/json'])
 
         # Authentication setting
@@ -390,9 +391,9 @@ class LookApi(object):
                  returns the request thread.
         """
 
-        all_params = ['look_id', 'format', 'limit', 'apply_formatting', 'cache', 'image_width', 'image_height', 'generate_drill_links', 'force_production']
+        all_params = ['look_id', 'format', 'limit', 'apply_formatting', 'cache', 'image_width',
+                      'image_height', 'generate_drill_links', 'force_production']
         all_params.append('callback')
-
         params = locals()
         for key, val in iteritems(params['kwargs']):
             if key not in all_params:
@@ -441,17 +442,17 @@ class LookApi(object):
         body_params = None
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.api_client. \
             select_header_accept(['text', 'application/json', 'image/png', 'image/jpg'])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.api_client. \
             select_header_content_type(['application/json'])
 
-        # Authentication setting
-        auth_settings = []
+        # We put the access token on the instance in the header of our request.
+        header_params['Authorization'] = 'token ' + self.__access_token
 
         response = self.api_client.call_api(resource_path, 'GET',
                                             path_params,
@@ -461,6 +462,6 @@ class LookApi(object):
                                             post_params=form_params,
                                             files=local_var_files,
                                             response_type='str',
-                                            auth_settings=auth_settings,
                                             callback=params.get('callback'))
+
         return response

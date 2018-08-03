@@ -1,3 +1,6 @@
+#configuration file
+lookerpy/config.yml
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -63,3 +66,5 @@ target/
 
 #Mac OSX
 .DS_Store
+config.yml
+lookerpy/apis/config.yml

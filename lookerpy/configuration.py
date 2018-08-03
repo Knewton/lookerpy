@@ -19,8 +19,8 @@ Copyright 2016 SmartBear Software
 """
 
 from __future__ import absolute_import
-import base64
 import urllib3
+import yaml
 
 try:
     import httplib
@@ -30,8 +30,8 @@ except ImportError:
 
 import sys
 import logging
-
 from six import iteritems
+
 
 def singleton(cls, *args, **kw):
     instances = {}
@@ -40,7 +40,22 @@ def singleton(cls, *args, **kw):
         if cls not in instances:
             instances[cls] = cls(*args, **kw)
         return instances[cls]
+
     return _singleton
+
+
+def _fetch_credentials(configuration_yaml, environment):
+    with open(configuration_yaml) as f:
+        try:
+            params = yaml.load(f)
+            client_id = params[environment]['client_id']
+            client_secret = params[environment]['client_secret']
+            host = params[environment]['host']
+            f.close()
+        except IOError:
+            raise
+
+    return client_id, client_secret, host
 
 
 @singleton
@@ -55,8 +70,15 @@ class Configuration(object):
         """
         Constructor
         """
-        # Default Base url
-        self.host = "https://looker-stage-vpc.knewton.net:29999/api/3.0"
+
+        self.configuration_yaml = 'lookerpy/config.yml'
+        self.environment = 'production'
+
+        configuration_yaml = self.configuration_yaml
+        environment = self.environment
+
+        self.client_id, self.client_secret, self.host = _fetch_credentials(configuration_yaml,
+                                                                           environment)
         # Default api client
         self.api_client = None
         # Temp file folder for downloading files
@@ -64,14 +86,18 @@ class Configuration(object):
 
         # Authentication Settings
         # dict to store API key(s)
-        self.api_key = {}
+
+        self.api_key = {
+            'client_id': self.client_id,
+            'client_secret': self.client_secret
+        }
+
         # dict to store API prefix (e.g. Bearer)
         self.api_key_prefix = {}
         # Username for HTTP basic authentication
         self.username = ""
         # Password for HTTP basic authentication
         self.password = ""
-
 
         # Logging Settings
         self.logger = {}
@@ -204,8 +230,8 @@ class Configuration(object):
 
         :return: The token for basic HTTP authentication.
         """
-        return urllib3.util.make_headers(basic_auth=self.username + ':' + self.password)\
-                           .get('authorization')
+        return urllib3.util.make_headers(basic_auth=self.username + ':' + self.password) \
+            .get('authorization')
 
     def auth_settings(self):
         """
@@ -223,9 +249,9 @@ class Configuration(object):
 
         :return: The report for debugging.
         """
-        return "Python SDK Debug Report:\n"\
-               "OS: {env}\n"\
-               "Python Version: {pyversion}\n"\
-               "Version of the API: 3.0.0\n"\
-               "SDK Package Version: 1.0.0".\
-               format(env=sys.platform, pyversion=sys.version)
+        return "Python SDK Debug Report:\n" \
+               "OS: {env}\n" \
+               "Python Version: {pyversion}\n" \
+               "Version of the API: 3.0.0\n" \
+               "SDK Package Version: 1.0.0". \
+            format(env=sys.platform, pyversion=sys.version)
