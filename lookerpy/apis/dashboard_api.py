@@ -18,16 +18,12 @@ Copyright 2016 SmartBear Software
 """
 
 from __future__ import absolute_import
-
-import sys
-import os
-import re
-
 # python 2 and python 3 compatibility library
 from six import iteritems
 
 from ..configuration import Configuration
 from ..api_client import ApiClient
+from .connect_to_api import connect_to_api
 
 
 class DashboardApi(object):
@@ -45,6 +41,10 @@ class DashboardApi(object):
             if not config.api_client:
                 config.api_client = ApiClient()
             self.api_client = config.api_client
+
+        # When instantiating this class, get an access token and store it as an instance variable
+        __access_token = connect_to_api()
+        self.__access_token = __access_token
 
     def all_dashboards(self, **kwargs):
         """
@@ -80,8 +80,6 @@ class DashboardApi(object):
             params[key] = val
         del params['kwargs']
 
-
-
         resource_path = '/dashboards'.replace('{format}', 'json')
         path_params = {}
 
@@ -97,13 +95,13 @@ class DashboardApi(object):
         body_params = None
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.api_client. \
             select_header_accept(['application/json'])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.api_client. \
             select_header_content_type(['application/json'])
 
         # Authentication setting
@@ -157,8 +155,6 @@ class DashboardApi(object):
             params[key] = val
         del params['kwargs']
 
-
-
         resource_path = '/dashboards/copy'.replace('{format}', 'json')
         path_params = {}
 
@@ -178,13 +174,13 @@ class DashboardApi(object):
             body_params = params['body']
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.api_client. \
             select_header_accept(['application/json'])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.api_client. \
             select_header_content_type(['application/json'])
 
         # Authentication setting
@@ -236,8 +232,6 @@ class DashboardApi(object):
             params[key] = val
         del params['kwargs']
 
-
-
         resource_path = '/dashboards'.replace('{format}', 'json')
         path_params = {}
 
@@ -253,13 +247,13 @@ class DashboardApi(object):
             body_params = params['body']
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.api_client. \
             select_header_accept(['application/json'])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.api_client. \
             select_header_content_type(['application/json'])
 
         # Authentication setting
@@ -314,8 +308,8 @@ class DashboardApi(object):
 
         # verify the required parameter 'dashboard_id' is set
         if ('dashboard_id' not in params) or (params['dashboard_id'] is None):
-            raise ValueError("Missing the required parameter `dashboard_id` when calling `create_dashboard_prefetch`")
-
+            raise ValueError(
+                "Missing the required parameter `dashboard_id` when calling `create_dashboard_prefetch`")
 
         resource_path = '/dashboards/{dashboard_id}/prefetch'.replace('{format}', 'json')
         path_params = {}
@@ -334,13 +328,13 @@ class DashboardApi(object):
             body_params = params['body']
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.api_client. \
             select_header_accept(['application/json'])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.api_client. \
             select_header_content_type(['application/json'])
 
         # Authentication setting
@@ -395,8 +389,8 @@ class DashboardApi(object):
 
         # verify the required parameter 'dashboard_id' is set
         if ('dashboard_id' not in params) or (params['dashboard_id'] is None):
-            raise ValueError("Missing the required parameter `dashboard_id` when calling `dashboard`")
-
+            raise ValueError(
+                "Missing the required parameter `dashboard_id` when calling `dashboard`")
 
         resource_path = '/dashboards/{dashboard_id}'.replace('{format}', 'json')
         path_params = {}
@@ -415,17 +409,17 @@ class DashboardApi(object):
         body_params = None
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.api_client. \
             select_header_accept(['application/json'])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.api_client. \
             select_header_content_type(['application/json'])
 
-        # Authentication setting
-        auth_settings = []
+        # We put the access token on the instance in the header of our request.
+        header_params['Authorization'] = 'token ' + self.__access_token
 
         response = self.api_client.call_api(resource_path, 'GET',
                                             path_params,
@@ -435,7 +429,6 @@ class DashboardApi(object):
                                             post_params=form_params,
                                             files=local_var_files,
                                             response_type='Dashboard',
-                                            auth_settings=auth_settings,
                                             callback=params.get('callback'))
         return response
 
@@ -476,8 +469,8 @@ class DashboardApi(object):
 
         # verify the required parameter 'dashboard_id' is set
         if ('dashboard_id' not in params) or (params['dashboard_id'] is None):
-            raise ValueError("Missing the required parameter `dashboard_id` when calling `dashboard_prefetch`")
-
+            raise ValueError(
+                "Missing the required parameter `dashboard_id` when calling `dashboard_prefetch`")
 
         resource_path = '/dashboards/{dashboard_id}/prefetch'.replace('{format}', 'json')
         path_params = {}
@@ -496,13 +489,13 @@ class DashboardApi(object):
         body_params = None
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.api_client. \
             select_header_accept(['application/json'])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.api_client. \
             select_header_content_type(['application/json'])
 
         # Authentication setting
@@ -555,8 +548,6 @@ class DashboardApi(object):
             params[key] = val
         del params['kwargs']
 
-
-
         resource_path = '/dashboards/move_plan'.replace('{format}', 'json')
         path_params = {}
 
@@ -574,13 +565,13 @@ class DashboardApi(object):
         body_params = None
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.api_client. \
             select_header_accept(['application/json'])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.api_client. \
             select_header_content_type(['application/json'])
 
         # Authentication setting
@@ -634,8 +625,8 @@ class DashboardApi(object):
 
         # verify the required parameter 'dashboard_id' is set
         if ('dashboard_id' not in params) or (params['dashboard_id'] is None):
-            raise ValueError("Missing the required parameter `dashboard_id` when calling `delete_dashboard`")
-
+            raise ValueError(
+                "Missing the required parameter `dashboard_id` when calling `delete_dashboard`")
 
         resource_path = '/dashboards/{dashboard_id}'.replace('{format}', 'json')
         path_params = {}
@@ -652,13 +643,13 @@ class DashboardApi(object):
         body_params = None
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.api_client. \
             select_header_accept(['application/json'])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.api_client. \
             select_header_content_type(['application/json'])
 
         # Authentication setting
@@ -716,7 +707,6 @@ class DashboardApi(object):
         if ('body' not in params) or (params['body'] is None):
             raise ValueError("Missing the required parameter `body` when calling `move_dashboards`")
 
-
         resource_path = '/dashboards/move'.replace('{format}', 'json')
         path_params = {}
 
@@ -736,13 +726,13 @@ class DashboardApi(object):
             body_params = params['body']
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.api_client. \
             select_header_accept(['application/json'])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.api_client. \
             select_header_content_type(['application/json'])
 
         # Authentication setting
@@ -797,11 +787,12 @@ class DashboardApi(object):
 
         # verify the required parameter 'dashboard_id' is set
         if ('dashboard_id' not in params) or (params['dashboard_id'] is None):
-            raise ValueError("Missing the required parameter `dashboard_id` when calling `update_dashboard`")
+            raise ValueError(
+                "Missing the required parameter `dashboard_id` when calling `update_dashboard`")
         # verify the required parameter 'body' is set
         if ('body' not in params) or (params['body'] is None):
-            raise ValueError("Missing the required parameter `body` when calling `update_dashboard`")
-
+            raise ValueError(
+                "Missing the required parameter `body` when calling `update_dashboard`")
 
         resource_path = '/dashboards/{dashboard_id}'.replace('{format}', 'json')
         path_params = {}
@@ -820,13 +811,13 @@ class DashboardApi(object):
             body_params = params['body']
 
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.\
+        header_params['Accept'] = self.api_client. \
             select_header_accept(['application/json'])
         if not header_params['Accept']:
             del header_params['Accept']
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.\
+        header_params['Content-Type'] = self.api_client. \
             select_header_content_type(['application/json'])
 
         # Authentication setting
